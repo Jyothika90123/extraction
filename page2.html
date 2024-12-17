@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Validation Form</title>
+    <link rel="stylesheet" href="page2.css"/>
+    
+</head>
+<body>
+    <header style="display: flex; align-items: center; justify-content: flex-start; padding: 10px; background-color: #094e93; position: absolute; top: 0; left: 0; width: 100%;">
+        <img src="https://via.placeholder.com/50" alt="Logo" style="margin-left: 10px;">
+      </header>
+    <div class="form-container">
+        <div class="form-group">
+            <div class="status-text">Enter Password</div>
+            <div id="passwordDisplay1" class="password-display">****</div>
+            <div id="confirmText" class="status-text" style="display: none;">Confirm Password</div>
+            <div id="passwordDisplay2" class="password-display" style="display: none;">****</div>
+            <div id="errorMessage" class="error-message">Passwords do not match</div>
+        </div>
+
+        <div class="keypad">
+            <button class="key" onclick="addNumber('1')">1</button>
+            <button class="key" onclick="addNumber('2')">2</button>
+            <button class="key" onclick="addNumber('3')">3</button>
+            <button class="key" onclick="addNumber('4')">4</button>
+            <button class="key" onclick="addNumber('5')">5</button>
+            <button class="key" onclick="addNumber('6')">6</button>
+            <button class="key" onclick="addNumber('7')">7</button>
+            <button class="key" onclick="addNumber('8')">8</button>
+            <button class="key" onclick="addNumber('9')">9</button>
+            <button class="key action-key" onclick="clearEntry()">Clear</button>
+            <button class="key" onclick="addNumber('0')">0</button>
+            <button class="key action-key" onclick="deleteNumber()">←</button>
+        </div>
+
+        <button id="proceedBtn" class="proceed-btn" disabled onclick="validateAndProceed()">Proceed</button>
+    </div>
+
+    <script>
+        let firstPassword = '';
+        let secondPassword = '';
+        let isConfirming = false;
+
+        function updateDisplay(password, displayElement) {
+            displayElement.textContent = '*'.repeat(password.length);
+        }
+
+        function addNumber(num) {
+            if (!isConfirming) {
+                if (firstPassword.length < 4) {
+                    firstPassword += num;
+                    updateDisplay(firstPassword, document.getElementById('passwordDisplay1'));
+                    if (firstPassword.length === 4) {
+                        isConfirming = true;
+                        document.getElementById('confirmText').style.display = 'block';
+                        document.getElementById('passwordDisplay2').style.display = 'block';
+                    }
+                }
+            } else {
+                if (secondPassword.length < 4) {
+                    secondPassword += num;
+                    updateDisplay(secondPassword, document.getElementById('passwordDisplay2'));
+                    checkPasswords();
+                }
+            }
+        }
+
+        function clearEntry() {
+            if (isConfirming && secondPassword.length > 0) {
+                secondPassword = '';
+                updateDisplay(secondPassword, document.getElementById('passwordDisplay2'));
+            } else {
+                firstPassword = '';
+                secondPassword = '';
+                isConfirming = false;
+                updateDisplay(firstPassword, document.getElementById('passwordDisplay1'));
+                document.getElementById('confirmText').style.display = 'none';
+                document.getElementById('passwordDisplay2').style.display = 'none';
+            }
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('proceedBtn').disabled = true;
+        }
+
+        function deleteNumber() {
+            if (isConfirming && secondPassword.length > 0) {
+                secondPassword = secondPassword.slice(0, -1);
+                updateDisplay(secondPassword, document.getElementById('passwordDisplay2'));
+            } else if (firstPassword.length > 0) {
+                firstPassword = firstPassword.slice(0, -1);
+                updateDisplay(firstPassword, document.getElementById('passwordDisplay1'));
+                if (isConfirming && firstPassword.length < 4) {
+                    isConfirming = false;
+                    document.getElementById('confirmText').style.display = 'none';
+                    document.getElementById('passwordDisplay2').style.display = 'none';
+                }
+            }
+            checkPasswords();
+        }
+
+        function checkPasswords() {
+            const errorMessage = document.getElementById('errorMessage');
+            const proceedBtn = document.getElementById('proceedBtn');
+
+            if (isConfirming && secondPassword.length === 4) {
+                if (firstPassword === secondPassword) {
+                    errorMessage.style.display = 'none';
+                    proceedBtn.disabled = false;
+                } else {
+                    errorMessage.style.display = 'block';
+                    proceedBtn.disabled = true;
+                }
+            } else {
+                errorMessage.style.display = 'none';
+                proceedBtn.disabled = true;
+            }
+        }
+
+        function validateAndProceed() {
+            if (firstPassword === secondPassword && firstPassword.length === 4) {
+                // Store password securely if needed
+                // Redirect to details page
+                window.location.href = 'details.html';
+            }
+        }
+    </script>
+</body>
+</html>

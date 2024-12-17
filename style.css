@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  /* Body Styles */
+  body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('./images/bg.jpg') no-repeat center center/cover;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Logo Container */
+  .logo-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Logo Image */
+  .logo {
+    width: 150px;
+    opacity: 0;
+    animation: fadeInOut 3s ease-in-out forwards;
+  }
+
+  /* Animation Keyframes */
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.5);
+    }
+  }

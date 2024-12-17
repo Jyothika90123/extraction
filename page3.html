@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="page3.css"/>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>User Management</h1>
+            <div>
+                <button class="btn btn-primary" onclick="showAddUserModal()">Add User</button>
+                <button class="btn btn-secondary" onclick="window.location.href='settings.html'">Settings</button>
+            </div>
+        </div>
+
+        <!-- Add User Modal -->
+        <div id="addUserModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddUserModal()">&times;</span>
+                <h2>Add New User</h2>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="userName">Name:</label>
+                        <input type="text" id="userName" required placeholder="Enter user name">
+                    </div>
+                    <div class="form-group">
+                        <label for="userRole">Role:</label>
+                        <input type="text" id="userRole" required placeholder="Enter user role">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <!-- Users will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Store users in localStorage
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Generate unique ID
+        function generateUserId() {
+            return 'USR' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        }
+
+        // Add new user
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newUser = {
+                id: generateUserId(),
+                name: document.getElementById('userName').value,
+                role: document.getElementById('userRole').value,
+                status: true
+            };
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            renderUsers();
+            closeAddUserModal();
+            this.reset();
+        });
+
+        // Render users table
+        function renderUsers() {
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = '';
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.role}</td>
+                    <td>
+                        <label class="toggle-switch">
+                            <input type="checkbox" ${user.status ? 'checked' : ''} 
+                                onchange="toggleUserStatus('${user.id}')">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteUser('${user.id}')">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Toggle user status
+        function toggleUserStatus(userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                user.status = !user.status;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+
+        // Delete user
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('users', JSON.stringify(users));
+                renderUsers();
+            }
+        }
+
+        // Modal functions
+        function showAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'block';
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('addUserModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Initialize table on load
+        renderUsers();
+    </script>
+</body>
+</html>

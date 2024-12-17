@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extraction Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+            url('./images/bg.jpg') no-repeat center center/cover;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 0 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-item:hover {
+            border-bottom: 3px solid #4CAF50;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            border-bottom: 3px solid #4CAF50;
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .settings-panel {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        select option {
+            background-color: #1e3c72;
+            color: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .parameter-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .parameter-card h3 {
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        /* Style for number input arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Placeholder color */
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Extraction Settings</h1>
+    </div>
+    
+    <ul class="nav-tabs">
+       
+        <li class="nav-item" onclick="showPanel('temperature')">Temperature</li>
+        <li class="nav-item" onclick="showPanel('centrifuge')">Centrifuge</li>
+        <li class="nav-item" onclick="showPanel('buffer')">Buffer</li>
+        <li class="nav-item" onclick="showPanel('protocol')">Protocol</li>
+        <li class="nav-item active" onclick="showPanel('run-program')">Run Program</li>
+    </ul>
+
+    <div class="content">
+        <!-- Run Program Panel -->
+       
+
+        <!-- Temperature Panel -->
+        <div id="temperature" class="settings-panel">
+            <div class="parameter-card">
+                <h3>Temperature Control</h3>
+                <div class="form-group">
+                    <label>Lysis Temperature (°C):</label>
+                    <input type="number" id="lysisTemp" min="4" max="95" value="56">
+                </div>
+                <div class="form-group">
+                    <label>Elution Temperature (°C):</label>
+                    <input type="number" id="elutionTemp" min="4" max="95" value="65">
+                </div>
+                <button class="btn btn-primary" onclick="saveTemperature()">Save Temperature Settings</button>
+            </div>
+        </div>
+
+        <!-- Centrifuge Panel -->
+        <div id="centrifuge" class="settings-panel">
+            <div class="parameter-card">
+                <h3>Centrifuge Settings</h3>
+                <div class="form-group">
+                    <label>Binding Speed (RPM):</label>
+                    <input type="number" id="bindingSpeed" min="1000" max="15000" value="10000">
+                </div>
+                <div class="form-group">
+                    <label>Wash Speed (RPM):</label>
+                    <input type="number" id="washSpeed" min="1000" max="15000" value="12000">
+                </div>
+                <button class="btn btn-primary" onclick="saveCentrifuge()">Save Centrifuge Settings</button>
+            </div>
+        </div>
+
+        <!-- Buffer Panel -->
+        <div id="buffer" class="settings-panel">
+            <div class="parameter-card">
+                <h3>Buffer Settings</h3>
+                <div class="form-group">
+                    <label>Lysis Buffer:</label>
+                    <select id="lysisBuffer">
+                        <option value="buffer1">Buffer AL</option>
+                        <option value="buffer2">Buffer ATL</option>
+                        <option value="buffer3">Buffer RLT</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Wash Buffer:</label>
+                    <select id="washBuffer">
+                        <option value="buffer1">Buffer AW1</option>
+                        <option value="buffer2">Buffer AW2</option>
+                        <option value="buffer3">Buffer RPE</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="saveBuffer()">Save Buffer Settings</button>
+            </div>
+        </div>
+
+        <!-- Protocol Panel -->
+        <div id="protocol" class="settings-panel">
+            <div class="parameter-card">
+                <h3>Protocol Settings</h3>
+                <div class="form-group">
+                    <label>Protocol Type:</label>
+                    <select id="protocolType">
+                        <option value="standard">Standard Protocol</option>
+                        <option value="quick">Quick Protocol</option>
+                        <option value="custom">Custom Protocol</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Incubation Time (minutes):</label>
+                    <input type="number" id="incubationTime" min="1" max="120" value="10">
+                </div>
+                <button class="btn btn-primary" onclick="saveProtocol()">Save Protocol Settings</button>
+            </div>
+        </div>
+    </div>
+    <div id="run-program" class="settings-panel active">
+        <div class="parameter-card">
+            <h3>Extraction Settings</h3>
+            <div class="form-group">
+                <label>Extraction Type:</label>
+                <select id="extractionType">
+                    <option value="dna">DNA Extraction</option>
+                    <option value="rna">RNA Extraction</option>
+                    <option value="combined">Combined DNA/RNA Extraction</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Sample Volume (µL):</label>
+                <input type="number" id="sampleVolume" min="10" max="1000" value="100">
+            </div>
+            <div class="form-group">
+                <label>Number of Samples:</label>
+                <input type="number" id="sampleCount" min="1" max="24" value="1">
+            </div>
+            <button class="btn btn-primary" onclick="startExtraction()">Start Extraction</button>
+        </div>
+    </div>
+
+    <script>
+        // Your existing JavaScript remains the same
+        function showPanel(panelId) {
+            document.querySelectorAll('.settings-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(panelId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function startExtraction() {
+            const type = document.getElementById('extractionType').value;
+            const volume = document.getElementById('sampleVolume').value;
+            const count = document.getElementById('sampleCount').value;
+            alert(`Starting ${type} extraction\nVolume: ${volume}µL\nSamples: ${count}`);
+        }
+
+        function saveTemperature() {
+            const lysis = document.getElementById('lysisTemp').value;
+            const elution = document.getElementById('elutionTemp').value;
+            alert(`Temperature settings saved\nLysis: ${lysis}°C\nElution: ${elution}°C`);
+        }
+
+        function saveCentrifuge() {
+            const binding = document.getElementById('bindingSpeed').value;
+            const wash = document.getElementById('washSpeed').value;
+            alert(`Centrifuge settings saved\nBinding: ${binding} RPM\nWash: ${wash} RPM`);
+        }
+
+        function saveBuffer() {
+            const lysis = document.getElementById('lysisBuffer').value;
+            const wash = document.getElementById('washBuffer').value;
+            alert(`Buffer settings saved\nLysis: ${lysis}\nWash: ${wash}`);
+        }
+
+        function saveProtocol() {
+            const type = document.getElementById('protocolType').value;
+            const time = document.getElementById('incubationTime').value;
+            alert(`Protocol settings saved\nType: ${type}\nIncubation Time: ${time} minutes`);
+        }
+    </script>
+</body>
+</html>
